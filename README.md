@@ -131,6 +131,10 @@ use. The default **nthreads** parameter is the number of CPU cores.
 * **excludesamples=[file]** where [file] is a text file containing samples
 (one sample per line) to be excluded from the analysis.
 
+* **includesamples=[file]** where [file] is a text file containing samples
+(one sample per line) to be included from the analysis. Cannot be used with
+**excludedsamples**.
+
 
 ## Output files
 The **hap-ibd** program produces three output files: a **log** file, an
@@ -163,3 +167,4 @@ You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE
 
 * Add [Makefile](Makefile).
 * Allow indel variants encoded as `I` and `D` in the input VCF file.
+* Add option **includesamples**.

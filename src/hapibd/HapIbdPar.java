@@ -40,6 +40,7 @@ public final class HapIbdPar {
     private final File map;
     private final String out;
     private final File excludesamples;
+    private final File includesamples;
 
     // algorithm parameters
     private final int min_mac;
@@ -83,6 +84,8 @@ public final class HapIbdPar {
         out = Validate.stringArg("out", argsMap, true, null, null);
         excludesamples = Validate.getFile(Validate.stringArg("excludesamples",
                 argsMap, false, null, null));
+        includesamples = Validate.getFile(Validate.stringArg("includesamples",
+                argsMap, false, null, null));
 
         // algorithm parameters
         min_mac = Validate.intArg("min-mac", argsMap, false, DEF_MIN_MAC, 1, IMAX);
@@ -118,7 +121,8 @@ public final class HapIbdPar {
                 + "  gt=<VCF file with GT field>                         (required)" + nl
                 + "  map=<PLINK map file with cM units>                  (required)" + nl
                 + "  out=<output file prefix>                            (required)" + nl
-                + "  excludesamples=<excluded samples file>              (optional)" + nl + nl
+                + "  excludesamples=<excluded samples file>              (optional)" + nl
+                + "  includesamples=<included samples file>              (optional)" + nl + nl
 
                 + "Algorithm Parameters: " + nl
                 + "  min-seed=<min cM length of seed segment>            (default: " + DEF_MIN_SEED + ")" + nl
@@ -173,6 +177,17 @@ public final class HapIbdPar {
      */
     public File excludesamples() {
         return excludesamples;
+    }
+
+    /**
+     * Returns the includesamples parameter or {@code null}
+     * if no includesamples parameter was specified.
+     *
+     * @return the includesamples parameter or {@code null}
+     * if no includesamples parameter was specified
+     */
+    public File includesamples() {
+        return includesamples;
     }
 
     // algorithm parameters
