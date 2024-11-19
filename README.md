@@ -119,11 +119,12 @@ Increasing the **min-markers** parameter can reduce inflation in
 the number of output IBD segments in regions with sparse marker coverage.
 See the **min-seed** and **min-extend** parameters for more information.
 
-* **min-mac=[integer ≥ 1]** specifies the minimum number of copies of the minor
+* **min-mac=[integer ≥ 0]** specifies the minimum number of copies of the minor
 allele. If a marker has fewer than the minimum number of minor allele carriers,
 the marker will be excluded from the analysis (**default: min-mac=2**).
 For multi-allelic markers, the minor allele count is the number of copies of
-the allele with the second-largest allele frequency.
+the allele with the second-largest allele frequency. If **min-mac=0** no
+markers will be excluded.
 
 * **nthreads=[integer ≥ 1]** specifies the number of computational threads to
 use. The default **nthreads** parameter is the number of CPU cores.
@@ -168,3 +169,4 @@ You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE
 * Add [Makefile](Makefile).
 * Allow indel variants encoded as `I` and `D` in the input VCF file.
 * Add option **includesamples**.
+* Allow min-mac to be set to 0 to disable the minor allele count filter.

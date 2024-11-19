@@ -88,7 +88,7 @@ public final class HapIbdPar {
                 argsMap, false, null, null));
 
         // algorithm parameters
-        min_mac = Validate.intArg("min-mac", argsMap, false, DEF_MIN_MAC, 1, IMAX);
+        min_mac = Validate.intArg("min-mac", argsMap, false, DEF_MIN_MAC, 0, IMAX);
         min_seed = Validate.floatArg("min-seed", argsMap, false, DEF_MIN_SEED, FMIN, FMAX);
         max_gap = Validate.intArg("max-gap", argsMap, false, DEF_MAX_GAP, -1, IMAX);
         float minMinExtend = Math.min(min_seed, DEF_MIN_EXTEND);
