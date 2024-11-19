@@ -162,3 +162,4 @@ You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE
 ## Changelog
 
 * Add [Makefile](Makefile).
+* Allow indel variants encoded as `I` and `D` in the input VCF file.
