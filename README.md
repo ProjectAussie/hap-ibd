@@ -32,6 +32,8 @@ with the commands:
     jar cfe hap-ibd.jar hapibd/HapIbdMain -C hap-ibd/src/ ./
     jar -i hap-ibd.jar
 
+These commands are encapsulated in the [Makefile](Makefile).
+
 ## Running hap-ibd
 
 The **hap-ibd** program requires Java version 1.8 (or a later version). Use of an
