@@ -159,3 +159,6 @@ files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 The **hap-ibd** program is licensed under the Apache License, Version 2.0 (the License).
 You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE-2.0
 
+## Changelog
+
+* Add [Makefile](Makefile).
