@@ -12,4 +12,4 @@ hap-ibd.jar: hapIbdMain
 	jar cfe hap-ibd.jar hapibd/HapIbdMain -C src/ ./
 
 clean :
-	rm -f src/*/*.class
+	rm -f src/*/*.class hap-ibd.jar
