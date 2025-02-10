@@ -81,14 +81,19 @@ public final class FilterUtil {
      * file contains two non-white-space characters separated by one or
      * more white-space characters
      */
-    public static Filter<String> sampleFilter(File excludeSamplesFile) {
-        if (excludeSamplesFile==null) {
-            return Filter.acceptAllFilter();
+    public static Filter<String> sampleFilter(File excludeSamplesFile, File includeSamplesFile) {
+        if (excludeSamplesFile!=null && includeSamplesFile!=null) {
+            throw new IllegalArgumentException("excludesamples and includesamples cannot be used together.");
         }
-        else {
+        else if (excludeSamplesFile!=null) {
            Set<String> exclude = Utilities.idSet(excludeSamplesFile);
            return Filter.excludeFilter(exclude);
         }
+        else if (includeSamplesFile!=null) {
+           Set<String> include = Utilities.idSet(includeSamplesFile);
+           return Filter.includeFilter(include);
+        }
+        return Filter.acceptAllFilter();
     }
 
     /**

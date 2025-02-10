@@ -32,6 +32,8 @@ with the commands:
     jar cfe hap-ibd.jar hapibd/HapIbdMain -C hap-ibd/src/ ./
     jar -i hap-ibd.jar
 
+These commands are encapsulated in the [Makefile](Makefile).
+
 ## Running hap-ibd
 
 The **hap-ibd** program requires Java version 1.8 (or a later version). Use of an
@@ -117,17 +119,22 @@ Increasing the **min-markers** parameter can reduce inflation in
 the number of output IBD segments in regions with sparse marker coverage.
 See the **min-seed** and **min-extend** parameters for more information.
 
-* **min-mac=[integer ≥ 1]** specifies the minimum number of copies of the minor
+* **min-mac=[integer ≥ 0]** specifies the minimum number of copies of the minor
 allele. If a marker has fewer than the minimum number of minor allele carriers,
 the marker will be excluded from the analysis (**default: min-mac=2**).
 For multi-allelic markers, the minor allele count is the number of copies of
-the allele with the second-largest allele frequency.
+the allele with the second-largest allele frequency. If **min-mac=0** no
+markers will be excluded.
 
 * **nthreads=[integer ≥ 1]** specifies the number of computational threads to
 use. The default **nthreads** parameter is the number of CPU cores.
 
 * **excludesamples=[file]** where [file] is a text file containing samples
 (one sample per line) to be excluded from the analysis.
+
+* **includesamples=[file]** where [file] is a text file containing samples
+(one sample per line) to be included from the analysis. Cannot be used with
+**excludedsamples**.
 
 
 ## Output files
@@ -157,3 +164,9 @@ files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 The **hap-ibd** program is licensed under the Apache License, Version 2.0 (the License).
 You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE-2.0
 
+## Changelog
+
+* Add [Makefile](Makefile).
+* Allow indel variants encoded as `I` and `D` in the input VCF file.
+* Add option **includesamples**.
+* Allow min-mac to be set to 0 to disable the minor allele count filter.

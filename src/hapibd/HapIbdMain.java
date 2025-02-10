@@ -98,7 +98,8 @@ public class HapIbdMain {
         File file = new File(par.out() + outSuffix);
         if (file.equals(par.gt())
                 || file.equals(par.map())
-                || file.equals(par.excludesamples())) {
+                || file.equals(par.excludesamples())
+                || file.equals(par.includesamples())) {
             String s = "ERROR: Output file equals input file: " + file;
             Utilities.exit(HapIbdPar.usage() + s);
         }
@@ -149,6 +150,11 @@ public class HapIbdMain {
             sb.append(Const.nl);
             sb.append("  excludesamples   :  ");
             sb.append(par.excludesamples());
+        }
+        if (par.includesamples()!=null) {
+            sb.append(Const.nl);
+            sb.append("  includesamples   :  ");
+            sb.append(par.includesamples());
         }
         sb.append(Const.nl);
         sb.append("  min-seed         :  ");

@@ -151,9 +151,9 @@ public class BasicMarker implements Marker {
         }
         for  (int j=0, n=ref.length(); j<n; ++j) {
             char c = Character.toUpperCase(ref.charAt(j));
-            if ((c=='A' || c=='C' || c=='G' || c=='T' || c=='N')==false) {
+            if ((c=='A' || c=='C' || c=='G' || c=='T' || c=='I' || c=='D' || c=='N')==false) {
                 String s = "ERROR: REF field is not a sequence"
-                        + " of A, C, T, G, or N characters at "
+                        + " of A, C, T, G, I, D, or N characters at "
                         + coordinate(chrom, pos) + " [" + ref + "]" ;
                 Utilities.exit(s);
             }
@@ -179,7 +179,7 @@ public class BasicMarker implements Marker {
         else {
             for (int j=0; j<n; ++j) {
                 char c = Character.toUpperCase(alt.charAt(j));
-                if ((c=='A' || c=='C' || c=='G' || c=='T' || c=='N')==false) {
+                if ((c=='A' || c=='C' || c=='G' || c=='T' || c=='I' || c=='D' || c=='N')==false) {
                     String s = "ERROR: invalid ALT allele at "
                             + coordinate(chrom, pos) + " [" + alt + "]";
                     Utilities.exit(s);
@@ -385,7 +385,7 @@ public class BasicMarker implements Marker {
      * @return the string allele obtained by changing the specified allele
      * to the opposite chromosome strand
      * @throws IllegalArgumentException if any character in the specified
-     * string is not 'A', 'C', 'G', 'T', 'N', or '*'.
+     * string is not 'A', 'C', 'G', 'T', 'I', 'D', 'N', or '*'.
      * @throws NullPointerException if {@code allele == null}
      */
     public static String flipStrand(String allele) {
@@ -403,6 +403,8 @@ public class BasicMarker implements Marker {
             case 'G' : return 'C';
             case 'T' : return 'A';
             case 'N' : return 'N';
+            case 'I' : return 'I';
+            case 'D' : return 'D';
             case '*' : return '*';
             default: throw new IllegalArgumentException(String.valueOf(c));
         }
