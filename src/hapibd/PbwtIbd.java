@@ -49,7 +49,7 @@ public final class PbwtIbd implements Runnable {
 
     private static final int BAOS_THRESHOLD = 1<<18;
     private static final int SEED_LIST_THRESHOLD = 1<<16;
-    private static final String[] HAP_TO_STRING = new String[] {"1", "2"};
+    private static final String[] HAP_TO_STRING = new String[] {"0", "1"};
     private static final AtomicLong N_IBD_SEGS = new AtomicLong(0);
     private static final AtomicLong N_HBD_SEGS = new AtomicLong(0);
     private static final AtomicInteger FINISHED_CNT = new AtomicInteger(0);
