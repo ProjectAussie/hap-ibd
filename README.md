@@ -146,8 +146,8 @@ the analysis parameters, the number of markers, the number of samples,
 the number of output HBD and IBD segments, and the mean number of HBD and
 IBD segments per sample.
 
-The gzip-compressed **ibd** file (.ibd.gz) contains IBD segments shared between
-individuals. The gzip-compressed **hbd** file (.hbd.gz) contains HBD
+The **ibd** file (.ibd) contains IBD segments shared between
+individuals. The **hbd** file (.hbd) contains HBD
 segments within within individuals. Each line of the **ibd** and **hbd** output
 files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 
@@ -158,7 +158,6 @@ files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 5. Chromosome
 6. Base coordinate of first marker in segment
 7. Base coordinate of last marker in segment
-8. cM length of IBD segment
 
 ## License
 The **hap-ibd** program is licensed under the Apache License, Version 2.0 (the License).
@@ -170,3 +169,8 @@ You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE
 * Allow indel variants encoded as `I` and `D` in the input VCF file.
 * Add option **includesamples**.
 * Allow min-mac to be set to 0 to disable the minor allele count filter.
+* Don't write unnecessary cmLength column
+* Write uncompressed output for faster post-processing
+* Use 0/1 not 1/2 for haplotypes
+* Ensure first columns in output are for higher proxy key
+* Only write output for proxy-keys >= min-new-proxkey

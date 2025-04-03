@@ -18,7 +18,6 @@
 package hapibd;
 
 import beagleutil.PbwtUpdater;
-import blbutil.BGZIPOutputStream;
 import blbutil.Const;
 import blbutil.SynchFileOutputStream;
 import blbutil.Utilities;
@@ -50,7 +49,7 @@ public final class PbwtIbd implements Runnable {
 
     private static final int BAOS_THRESHOLD = 1<<18;
     private static final int SEED_LIST_THRESHOLD = 1<<16;
-    private static final String[] HAP_TO_STRING = new String[] {"1", "2"};
+    private static final String[] HAP_TO_STRING = new String[] {"0", "1"};
     private static final AtomicLong N_IBD_SEGS = new AtomicLong(0);
     private static final AtomicLong N_HBD_SEGS = new AtomicLong(0);
     private static final AtomicInteger FINISHED_CNT = new AtomicInteger(0);
@@ -71,7 +70,7 @@ public final class PbwtIbd implements Runnable {
     private final float minOutput;
     private final int minSeedMarkersM1;
     private final int minExtendMarkersM1;
-
+    private final int minNewProxykey;
     private final PbwtUpdater pbwt;
     private final int[] a;
     private final int[] d;
@@ -94,7 +93,7 @@ public final class PbwtIbd implements Runnable {
     private final BlockingQueue<int[]> seedQ;
 
     private static PrintWriter printWriter(ByteArrayOutputStream out) {
-        return new PrintWriter(new BGZIPOutputStream(out, false));
+        return new PrintWriter(out);
     }
 
     /**
@@ -148,6 +147,7 @@ public final class PbwtIbd implements Runnable {
         this.minOutput = par.min_output();
         this.minSeedMarkersM1 = par.min_markers() - 1;
         this.minExtendMarkersM1 = (int) Math.floor((minExtend/minSeed)*par.min_markers()) - 1;
+        this.minNewProxykey = par.min_new_proxykey();
         this.nWindows = nWindows;
         this.seedList = new IntList(3*SEED_LIST_THRESHOLD/2 + 1);
         this.seedQ = seedQ;
@@ -459,11 +459,15 @@ public final class PbwtIbd implements Runnable {
 
     private void writeSegment(int hap1, int hap2, int start, int inclEnd,
             PrintWriter out) {
-        double cmLength = genPos[inclEnd] - genPos[start];
-        if (hap1>hap2) {
+        // At Embark, the new dog, ie the higher proxy key, comes first
+        if (Integer.parseInt(ids[hap1>>1]) < Integer.parseInt(ids[hap2>>1])) {
             int tmp = hap1;
             hap1 = hap2;
             hap2 = tmp;
+        }
+        // Only write segments with proxy keys >= minNewProxykey
+        if (Integer.parseInt(ids[hap1>>1]) < minNewProxykey) {
+            return;
         }
         out.print(ids[hap1>>1]);
         out.print(Const.tab);
@@ -478,8 +482,6 @@ public final class PbwtIbd implements Runnable {
         out.print(pos[start]);
         out.print(Const.tab);
         out.print(pos[inclEnd]);
-        out.print(Const.tab);
-        print3(cmLength, out);
         out.print(Const.nl);
     }
 

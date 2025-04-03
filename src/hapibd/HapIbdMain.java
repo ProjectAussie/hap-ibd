@@ -89,8 +89,8 @@ public class HapIbdMain {
                     + par.out() + "\"";
             Utilities.exit(HapIbdPar.usage() + s);
         }
-        checkOutputFilename(par, ".hbd.gz");
-        checkOutputFilename(par, ".ibd.gz");
+        checkOutputFilename(par, ".hbd");
+        checkOutputFilename(par, ".ibd");
         checkOutputFilename(par, ".log");
     }
 
@@ -177,6 +177,9 @@ public class HapIbdMain {
         sb.append(Const.nl);
         sb.append("  nthreads         :  ");
         sb.append(par.nthreads());
+        sb.append(Const.nl);
+        sb.append("  min-new-proxykey :  ");
+        sb.append(par.min_new_proxykey());
         sb.append(Const.nl);
         return sb.toString();
     }
