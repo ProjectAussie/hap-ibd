@@ -459,7 +459,6 @@ public final class PbwtIbd implements Runnable {
 
     private void writeSegment(int hap1, int hap2, int start, int inclEnd,
             PrintWriter out) {
-        double cmLength = genPos[inclEnd] - genPos[start];
         // At Embark, the new dog, ie the higher proxy key, comes first
         if (hap1<hap2) {
             int tmp = hap1;
@@ -479,8 +478,6 @@ public final class PbwtIbd implements Runnable {
         out.print(pos[start]);
         out.print(Const.tab);
         out.print(pos[inclEnd]);
-        out.print(Const.tab);
-        print3(cmLength, out);
         out.print(Const.nl);
     }
 

@@ -158,7 +158,6 @@ files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 5. Chromosome
 6. Base coordinate of first marker in segment
 7. Base coordinate of last marker in segment
-8. cM length of IBD segment
 
 ## License
 The **hap-ibd** program is licensed under the Apache License, Version 2.0 (the License).
