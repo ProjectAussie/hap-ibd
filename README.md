@@ -169,3 +169,8 @@ You may obtain a copy of the License from http://www.apache.org/licenses/LICENSE
 * Allow indel variants encoded as `I` and `D` in the input VCF file.
 * Add option **includesamples**.
 * Allow min-mac to be set to 0 to disable the minor allele count filter.
+* Don't write unnecessary cmLength column
+* Write uncompressed output for faster post-processing
+* Use 0/1 not 1/2 for haplotypes
+* Ensure first columns in output are for higher proxy key
+* Only write output for proxy-keys >= min-new-proxkey

@@ -178,6 +178,9 @@ public class HapIbdMain {
         sb.append("  nthreads         :  ");
         sb.append(par.nthreads());
         sb.append(Const.nl);
+        sb.append("  min-new-proxykey :  ");
+        sb.append(par.min_new_proxykey());
+        sb.append(Const.nl);
         return sb.toString();
     }
 

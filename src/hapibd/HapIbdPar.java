@@ -50,7 +50,7 @@ public final class HapIbdPar {
     private final float min_output;
     private final int min_markers;
     private final int nthreads;
-
+    private final int min_new_proxykey;
     private static final int DEF_MIN_MAC = 2;
     private static final float DEF_MIN_SEED = 2.0f;
     private static final float DEF_MIN_EXTEND = 1.0f;
@@ -58,7 +58,7 @@ public final class HapIbdPar {
     private static final float DEF_MIN_OUTPUT = 2.0f;
     private static final int DEF_MIN_MARKERS = 100;
     private static final int DEF_NTHREADS = Runtime.getRuntime().availableProcessors();
-
+    private static final int DEF_MIN_NEW_PROXYKEY = 0;
     /**
      * Constructs an {@code HapIbdPar} object that represents the
      * command line arguments for the HapIBD program.  See the
@@ -96,6 +96,7 @@ public final class HapIbdPar {
         min_output = Validate.floatArg("min-output", argsMap, false, DEF_MIN_OUTPUT, FMIN, FMAX);
         min_markers = Validate.intArg("min-markers", argsMap, false, DEF_MIN_MARKERS, 1, IMAX);
         nthreads = Validate.intArg("nthreads", argsMap, false, DEF_NTHREADS, 1, IMAX);
+        min_new_proxykey = Validate.intArg("min-new-proxykey", argsMap, false, DEF_MIN_NEW_PROXYKEY, 0, IMAX);
 
         Validate.confirmEmptyMap(argsMap);
     }
@@ -131,7 +132,8 @@ public final class HapIbdPar {
                 + "  min-output=<min cM length of output segment>        (default: " + DEF_MIN_OUTPUT + ")" + nl
                 + "  min-markers=<min markers in seed segment>           (default: " + DEF_MIN_MARKERS + ")" + nl
                 + "  min-mac=<minimum minor allele count filter>         (default: " + DEF_MIN_MAC + ")" + nl
-                + "  nthreads=<number of computational threads>          (default: all CPU cores)" + nl;
+                + "  nthreads=<number of computational threads>          (default: all CPU cores)" + nl
+                + "  min-new-proxykey=<minimum new proxy key>            (default: " + DEF_MIN_NEW_PROXYKEY + ")";
     }
 
     private static ChromInterval parseChromInt(String chrom) {
@@ -247,5 +249,13 @@ public final class HapIbdPar {
      */
     public int nthreads() {
         return nthreads;
+    }
+
+    /**
+     * Returns the min-new-proxykey parameter.
+     * @return the min-new-proxykey parameter
+     */
+    public int min_new_proxykey() {
+        return min_new_proxykey;
     }
 }

@@ -70,7 +70,7 @@ public final class PbwtIbd implements Runnable {
     private final float minOutput;
     private final int minSeedMarkersM1;
     private final int minExtendMarkersM1;
-
+    private final int minNewProxykey;
     private final PbwtUpdater pbwt;
     private final int[] a;
     private final int[] d;
@@ -147,6 +147,7 @@ public final class PbwtIbd implements Runnable {
         this.minOutput = par.min_output();
         this.minSeedMarkersM1 = par.min_markers() - 1;
         this.minExtendMarkersM1 = (int) Math.floor((minExtend/minSeed)*par.min_markers()) - 1;
+        this.minNewProxykey = par.min_new_proxykey();
         this.nWindows = nWindows;
         this.seedList = new IntList(3*SEED_LIST_THRESHOLD/2 + 1);
         this.seedQ = seedQ;
@@ -463,6 +464,10 @@ public final class PbwtIbd implements Runnable {
             int tmp = hap1;
             hap1 = hap2;
             hap2 = tmp;
+        }
+        // Only write segments with proxy keys >= minNewProxykey
+        if (Integer.parseInt(ids[hap1>>1]) < minNewProxykey) {
+            return;
         }
         out.print(ids[hap1>>1]);
         out.print(Const.tab);
