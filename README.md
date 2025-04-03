@@ -139,10 +139,10 @@ use. The default **nthreads** parameter is the number of CPU cores.
 * **min-new-proxykey=[integer ≥ 0]** specifies the proxy key value above
 which (inclusive) to treat proxy keys as "new" dogs in a comparison set.
 If specified, output will only be written for new dogs, and only for
-new dog x old dog matches.
+new dog x old dog matches, and no homozygosity will be output.
 To produce output for all dogs x all dogs (eg for all new dogs vs all 
-new dogs, if the input has been filtered to just new dogs) then don't
-provide this parameter (or set it to zero).
+new dogs, if the input has been filtered to just new dogs), including
+homozygosity, don't provide this parameter (or set it to zero).
 
 ## Output files
 The **hap-ibd** program produces three output files: a **log** file, an
