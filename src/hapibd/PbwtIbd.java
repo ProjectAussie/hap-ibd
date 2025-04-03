@@ -467,7 +467,7 @@ public final class PbwtIbd implements Runnable {
         }
         int hap1ProxyKey = Integer.parseInt(ids[hap1>>1]);
         int hap2ProxyKey = Integer.parseInt(ids[hap2>>1]);
-        // Only write segments for new dogs x old dogs if min-new-proxykey is specified
+        // If min-new-proxykey is specified, only write segments for new dogs x old dogs 
         if (minNewProxykey > 0 && (hap1ProxyKey < minNewProxykey || hap2ProxyKey >= minNewProxykey)) {
             return;
         }
