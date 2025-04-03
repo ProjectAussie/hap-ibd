@@ -134,8 +134,15 @@ use. The default **nthreads** parameter is the number of CPU cores.
 
 * **includesamples=[file]** where [file] is a text file containing samples
 (one sample per line) to be included from the analysis. Cannot be used with
-**excludedsamples**.
+**excludedsamples**. NOTE this is slower than filtering with VCF instead.
 
+* **min-new-proxykey=[integer ≥ 0]** specifies the proxy key value above
+which (inclusive) to treat proxy keys as "new" dogs in a comparison set.
+If specified, output will only be written for new dogs, and only for
+new dog x old dog matches.
+To produce output for all dogs x all dogs (eg for all new dogs vs all 
+new dogs, if the input has been filtered to just new dogs) then don't
+provide this parameter (or set it to zero).
 
 ## Output files
 The **hap-ibd** program produces three output files: a **log** file, an
