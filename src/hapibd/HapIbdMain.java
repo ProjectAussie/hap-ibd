@@ -89,8 +89,8 @@ public class HapIbdMain {
                     + par.out() + "\"";
             Utilities.exit(HapIbdPar.usage() + s);
         }
-        checkOutputFilename(par, ".hbd.gz");
-        checkOutputFilename(par, ".ibd.gz");
+        checkOutputFilename(par, ".hbd");
+        checkOutputFilename(par, ".ibd");
         checkOutputFilename(par, ".log");
     }
 

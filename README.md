@@ -146,8 +146,8 @@ the analysis parameters, the number of markers, the number of samples,
 the number of output HBD and IBD segments, and the mean number of HBD and
 IBD segments per sample.
 
-The gzip-compressed **ibd** file (.ibd.gz) contains IBD segments shared between
-individuals. The gzip-compressed **hbd** file (.hbd.gz) contains HBD
+The **ibd** file (.ibd) contains IBD segments shared between
+individuals. The **hbd** file (.hbd) contains HBD
 segments within within individuals. Each line of the **ibd** and **hbd** output
 files represents one IBD or HBD segment and contains 8 tab-delimited fields:
 

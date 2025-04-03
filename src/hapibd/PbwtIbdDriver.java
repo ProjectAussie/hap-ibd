@@ -40,7 +40,7 @@ import vcf.GeneticMap;
 import vcf.Marker;
 import vcf.MarkerMap;
 import vcf.RefGT;
-import vcf. RefGTRec;
+import vcf.RefGTRec;
 import vcf.RefIt;
 
 /**
@@ -65,8 +65,8 @@ public final class PbwtIbdDriver {
         ChromInterval chromInt = null;
         GeneticMap genMap = GeneticMap.geneticMap(par.map(), chromInt);
         long[] nSamplesAndMarkers = new long[2];
-        File hbdFile = new File(par.out() + ".hbd.gz");
-        File ibdFile = new File(par.out() + ".ibd.gz");
+        File hbdFile = new File(par.out() + ".hbd");
+        File ibdFile = new File(par.out() + ".ibd");
         try (SampleFileIt<RefGTRec> it = refIt(par);
                 SynchFileOutputStream hbdOS = new SynchFileOutputStream(hbdFile);
                 SynchFileOutputStream ibdOS = new SynchFileOutputStream(ibdFile)) {
@@ -87,8 +87,6 @@ public final class PbwtIbdDriver {
             } catch (Throwable t) {
                 Utilities.exit(t);
             }
-            hbdOS.writeEmptyBgzipBlock();
-            ibdOS.writeEmptyBgzipBlock();
         } catch (IOException ex) {
             Utilities.exit(ex);
         }

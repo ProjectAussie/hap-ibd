@@ -18,7 +18,6 @@
 package hapibd;
 
 import beagleutil.PbwtUpdater;
-import blbutil.BGZIPOutputStream;
 import blbutil.Const;
 import blbutil.SynchFileOutputStream;
 import blbutil.Utilities;
@@ -94,7 +93,7 @@ public final class PbwtIbd implements Runnable {
     private final BlockingQueue<int[]> seedQ;
 
     private static PrintWriter printWriter(ByteArrayOutputStream out) {
-        return new PrintWriter(new BGZIPOutputStream(out, false));
+        return new PrintWriter(out);
     }
 
     /**

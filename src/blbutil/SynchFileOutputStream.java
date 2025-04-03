@@ -96,13 +96,4 @@ public class SynchFileOutputStream implements AutoCloseable {
     public synchronized void close() throws IOException {
         outStream.close();
     }
-
-    /**
-     * Write an empty BGZIP block to this buffered {@code SynchFileOutputStream}.
-     *
-     * @throws IOException if an I/O error occurs
-     */
-    public synchronized void writeEmptyBgzipBlock() throws IOException {
-        BGZIPOutputStream.writeEmptyBlock(outStream);
-    }
 }
