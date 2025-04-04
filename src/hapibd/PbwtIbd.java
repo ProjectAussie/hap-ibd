@@ -482,7 +482,9 @@ public final class PbwtIbd implements Runnable {
         Map<Integer, PrintWriter> writers = type.equals("ibd") ? ibdWriters : hbdWriters;
         return writers.computeIfAbsent(proxyKey, key -> {
             try {
-                String filename = outputPrefix + "/" + key + "/" + splitFilename + "." + type;
+                String dirPath = outputPrefix + "/" + key;
+                new File(dirPath).mkdirs();
+                String filename = dirPath + "/" + splitFilename + "." + type;
                 return new PrintWriter(new File(filename));
             }
             catch (IOException e) {
