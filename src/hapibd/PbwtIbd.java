@@ -483,7 +483,10 @@ public final class PbwtIbd implements Runnable {
         return writers.computeIfAbsent(proxyKey, key -> {
             try {
                 String dirPath = outputPrefix + "/" + key;
-                new File(dirPath).mkdirs();
+                File dir = new File(dirPath);
+                if (!dir.mkdirs() && !dir.isDirectory()) {
+                    Utilities.exit("ERROR: Failed to create directory " + dirPath);
+                }
                 String filename = dirPath + "/" + splitFilename + "." + type;
                 return new PrintWriter(new File(filename));
             }
