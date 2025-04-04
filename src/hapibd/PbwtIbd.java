@@ -24,6 +24,7 @@ import blbutil.Utilities;
 import ints.IntArray;
 import ints.IntList;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -32,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import vcf.GT;
 import vcf.MarkerMap;
 import vcf.RefGT;
@@ -86,7 +89,11 @@ public final class PbwtIbd implements Runnable {
 
     private PrintWriter hbdOut = printWriter(hbdBaos);
     private PrintWriter ibdOut = printWriter(ibdBaos);
-
+    private final Map<Integer, PrintWriter> ibdWriters;
+    private final Map<Integer, PrintWriter> hbdWriters;
+    private final String outputPrefix;
+    private final String splitFilename;
+    private final boolean split;
     private boolean useSeedQ = false;
     private final int nWindows;
     private final IntList seedList;
@@ -153,6 +160,12 @@ public final class PbwtIbd implements Runnable {
         this.seedQ = seedQ;
         this.hbdOS = hbdOS;
         this.ibdOS = ibdOS;
+        this.split = par.split();
+
+        this.outputPrefix = par.out();
+        this.splitFilename = par.splitFilename();
+        this.ibdWriters = new ConcurrentHashMap<>();
+        this.hbdWriters = new ConcurrentHashMap<>();
 
         this.pbwt = new PbwtUpdater(nHaps);
         this.a = IntStream.range(0, nHaps).toArray();
@@ -191,6 +204,14 @@ public final class PbwtIbd implements Runnable {
         }
         catch (Throwable t) {
             Utilities.exit(t);
+        }
+        finally {
+            for (PrintWriter writer : ibdWriters.values()) {
+                writer.close();
+            }
+            for (PrintWriter writer : hbdWriters.values()) {
+                writer.close();
+            }
         }
     }
 
@@ -316,11 +337,11 @@ public final class PbwtIbd implements Runnable {
             inclEnd = extendInclEnd(hap1, hap2, inclEnd);
             if ((genPos[inclEnd] - genPos[start])>=minOutput) {
                 if ((hap1>>1)==(hap2>>1)) {
-                    writeSegment(hap1, hap2, start, inclEnd, hbdOut);
+                    writeSegment(hap1, hap2, start, inclEnd, hbdOut, "hbd");
                     N_HBD_SEGS.incrementAndGet();
                 }
                 else {
-                    writeSegment(hap1, hap2, start, inclEnd, ibdOut);
+                    writeSegment(hap1, hap2, start, inclEnd, ibdOut, "ibd");
                     N_IBD_SEGS.incrementAndGet();
                 }
             }
@@ -457,23 +478,60 @@ public final class PbwtIbd implements Runnable {
         }
     }
 
+    private PrintWriter getWriterForProxyKey(int proxyKey, String type) {
+        Map<Integer, PrintWriter> writers = type.equals("ibd") ? ibdWriters : hbdWriters;
+        return writers.computeIfAbsent(proxyKey, key -> {
+            try {
+                String dirPath = outputPrefix + "/" + key;
+                File dir = new File(dirPath);
+                if (!dir.mkdirs() && !dir.isDirectory()) {
+                    Utilities.exit("ERROR: Failed to create directory " + dirPath);
+                }
+                String filename = dirPath + "/" + splitFilename + "." + type;
+                return new PrintWriter(new File(filename));
+            }
+            catch (IOException e) {
+                Utilities.exit("ERROR creating " + type + " file for proxy key " + key + ": ", e);
+                return null; // This will never be reached due to Utilities.exit
+            }
+        });
+    }
+
     private void writeSegment(int hap1, int hap2, int start, int inclEnd,
-            PrintWriter out) {
+            PrintWriter out, String type) {
         // At Embark, the new dog, ie the higher proxy key, comes first
         if (Integer.parseInt(ids[hap1>>1]) < Integer.parseInt(ids[hap2>>1])) {
             int tmp = hap1;
             hap1 = hap2;
             hap2 = tmp;
         }
-        // Only write segments with proxy keys >= minNewProxykey
-        if (Integer.parseInt(ids[hap1>>1]) < minNewProxykey) {
+        int hap1ProxyKey = Integer.parseInt(ids[hap1>>1]);
+        int hap2ProxyKey = Integer.parseInt(ids[hap2>>1]);
+        // If min-new-proxykey is specified, only write segments for new dogs x old dogs 
+        if (minNewProxykey > 0 && (hap1ProxyKey < minNewProxykey || hap2ProxyKey >= minNewProxykey)) {
             return;
         }
-        out.print(ids[hap1>>1]);
+
+        if (split) {
+            PrintWriter splitWriter = getWriterForProxyKey(hap1ProxyKey, type);
+            synchronized (splitWriter) {
+                printSegment(splitWriter, hap1ProxyKey, hap2ProxyKey, hap1, hap2, start, inclEnd);
+                splitWriter.println(); // flushes line to file
+            }
+        } else {
+            printSegment(out, hap1ProxyKey, hap2ProxyKey, hap1, hap2, start, inclEnd);
+            out.print(Const.nl);
+        }
+
+    }
+
+    private void printSegment(PrintWriter out, int hap1ProxyKey, int hap2ProxyKey,
+            int hap1, int hap2, int start, int inclEnd) {
+        out.print(hap1ProxyKey);
         out.print(Const.tab);
         out.print(HAP_TO_STRING[hap1 & 0b1]);
         out.print(Const.tab);
-        out.print(ids[hap2>>1]);
+        out.print(hap2ProxyKey);
         out.print(Const.tab);
         out.print(HAP_TO_STRING[hap2 & 0b1]);
         out.print(Const.tab);
@@ -482,7 +540,6 @@ public final class PbwtIbd implements Runnable {
         out.print(pos[start]);
         out.print(Const.tab);
         out.print(pos[inclEnd]);
-        out.print(Const.nl);
     }
 
     public static void print3(double d, PrintWriter out) {

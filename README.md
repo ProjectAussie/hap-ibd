@@ -134,8 +134,23 @@ use. The default **nthreads** parameter is the number of CPU cores.
 
 * **includesamples=[file]** where [file] is a text file containing samples
 (one sample per line) to be included from the analysis. Cannot be used with
-**excludedsamples**.
+**excludedsamples**. NOTE this is slower than filtering with VCF instead.
 
+* **min-new-proxykey=[integer ≥ 0]** specifies the proxy key value above
+which (inclusive) to treat proxy keys as "new" dogs in a comparison set.
+If specified, output will only be written for new dogs, and only for
+new dog x old dog matches, and no homozygosity will be output.
+To produce output for all dogs x all dogs (eg for all new dogs vs all 
+new dogs, if the input has been filtered to just new dogs), including
+homozygosity, don't provide this parameter (or set it to zero).
+
+* **split=[boolean]** specifies whether to write output to individual files per sample.
+If true, each sample's IBD and HBD segments will be written to separate files
+with names like `{out}/proxy_key/{split-filename}.ibd` and
+`{out}/proxy_key/{split-filename}.hbd`.
+`out` example: "/tmp/blah". `split-filename` example: "0000_chr1".
+If false (default), all segments will be written to single `{output_prefix}.ibd`
+and `{output_prefix}.hbd` files.
 
 ## Output files
 The **hap-ibd** program produces three output files: a **log** file, an
