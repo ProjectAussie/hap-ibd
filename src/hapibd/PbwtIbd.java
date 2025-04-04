@@ -511,9 +511,11 @@ public final class PbwtIbd implements Runnable {
             PrintWriter splitWriter = getWriterForProxyKey(hap1ProxyKey, type);
             synchronized (splitWriter) {
                 printSegment(splitWriter, hap1ProxyKey, hap2ProxyKey, hap1, hap2, start, inclEnd);
+                splitWriter.println(); // flushes line to file
             }
         } else {
             printSegment(out, hap1ProxyKey, hap2ProxyKey, hap1, hap2, start, inclEnd);
+            out.print(Const.nl);
         }
 
     }
@@ -533,7 +535,6 @@ public final class PbwtIbd implements Runnable {
         out.print(pos[start]);
         out.print(Const.tab);
         out.print(pos[inclEnd]);
-        out.print(Const.nl);
     }
 
     public static void print3(double d, PrintWriter out) {
