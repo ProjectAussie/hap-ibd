@@ -84,14 +84,25 @@ public class HapIbdMain {
 
     private static void checkOutputPrefix(HapIbdPar par) {
         File outPrefix = new File(par.out());
-        if (outPrefix.isDirectory()) {
-            String s = "ERROR: \"out\" parameter cannot be a directory: \""
-                    + par.out() + "\"";
-            Utilities.exit(HapIbdPar.usage() + s);
+
+        if (par.split()) {
+            // When split is enabled, we don't need to check for .hbd and .ibd files
+            // since they will be created per sample
+            checkOutputFilename(par, ".log");
+            if (par.splitFilename() == null) {
+                String s = "ERROR: split-filename parameter is required when split is enabled";
+                Utilities.exit(HapIbdPar.usage() + s);
+            }
+        } else {
+            if (outPrefix.isDirectory()) {
+                String s = "ERROR: \"out\" parameter cannot be a directory: \""
+                        + par.out() + "\"";
+                Utilities.exit(HapIbdPar.usage() + s);
+            }
+            checkOutputFilename(par, ".hbd");
+            checkOutputFilename(par, ".ibd");
+            checkOutputFilename(par, ".log");
         }
-        checkOutputFilename(par, ".hbd");
-        checkOutputFilename(par, ".ibd");
-        checkOutputFilename(par, ".log");
     }
 
     private static void checkOutputFilename(HapIbdPar par, String outSuffix) {

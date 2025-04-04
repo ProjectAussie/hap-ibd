@@ -17,7 +17,6 @@
  */
 package hapibd;
 
-import beagleutil.ChromInterval;
 import blbutil.Const;
 import blbutil.Validate;
 import java.io.File;
@@ -39,6 +38,7 @@ public final class HapIbdPar {
     private final File gt;
     private final File map;
     private final String out;
+    private final String splitFilename;
     private final File excludesamples;
     private final File includesamples;
 
@@ -51,6 +51,7 @@ public final class HapIbdPar {
     private final int min_markers;
     private final int nthreads;
     private final int min_new_proxykey;
+    private final boolean split;
     private static final int DEF_MIN_MAC = 2;
     private static final float DEF_MIN_SEED = 2.0f;
     private static final float DEF_MIN_EXTEND = 1.0f;
@@ -59,6 +60,7 @@ public final class HapIbdPar {
     private static final int DEF_MIN_MARKERS = 100;
     private static final int DEF_NTHREADS = Runtime.getRuntime().availableProcessors();
     private static final int DEF_MIN_NEW_PROXYKEY = 0;
+    private static final boolean DEF_SPLIT = false;
     /**
      * Constructs an {@code HapIbdPar} object that represents the
      * command line arguments for the HapIBD program.  See the
@@ -82,6 +84,7 @@ public final class HapIbdPar {
                 null));
         map = Validate.getFile(Validate.stringArg("map", argsMap, true, null, null));
         out = Validate.stringArg("out", argsMap, true, null, null);
+        splitFilename = Validate.stringArg("split-filename", argsMap, false, null, null);
         excludesamples = Validate.getFile(Validate.stringArg("excludesamples",
                 argsMap, false, null, null));
         includesamples = Validate.getFile(Validate.stringArg("includesamples",
@@ -97,6 +100,7 @@ public final class HapIbdPar {
         min_markers = Validate.intArg("min-markers", argsMap, false, DEF_MIN_MARKERS, 1, IMAX);
         nthreads = Validate.intArg("nthreads", argsMap, false, DEF_NTHREADS, 1, IMAX);
         min_new_proxykey = Validate.intArg("min-new-proxykey", argsMap, false, DEF_MIN_NEW_PROXYKEY, 0, IMAX);
+        split = Validate.booleanArg("split", argsMap, false, DEF_SPLIT);
 
         Validate.confirmEmptyMap(argsMap);
     }
@@ -122,6 +126,7 @@ public final class HapIbdPar {
                 + "  gt=<VCF file with GT field>                         (required)" + nl
                 + "  map=<PLINK map file with cM units>                  (required)" + nl
                 + "  out=<output file prefix>                            (required)" + nl
+                + "  split-filename=<split filename>                     (optional)" + nl
                 + "  excludesamples=<excluded samples file>              (optional)" + nl
                 + "  includesamples=<included samples file>              (optional)" + nl + nl
 
@@ -133,15 +138,8 @@ public final class HapIbdPar {
                 + "  min-markers=<min markers in seed segment>           (default: " + DEF_MIN_MARKERS + ")" + nl
                 + "  min-mac=<minimum minor allele count filter>         (default: " + DEF_MIN_MAC + ")" + nl
                 + "  nthreads=<number of computational threads>          (default: all CPU cores)" + nl
-                + "  min-new-proxykey=<minimum new proxy key>            (default: " + DEF_MIN_NEW_PROXYKEY + ")";
-    }
-
-    private static ChromInterval parseChromInt(String chrom) {
-        ChromInterval ci = ChromInterval.parse(chrom);
-        if (chrom!=null && ci==null) {
-            throw new IllegalArgumentException("Invalid chrom parameter: " + chrom);
-        }
-        return ci;
+                + "  min-new-proxykey=<minimum new proxy key>            (default: " + DEF_MIN_NEW_PROXYKEY + ")" + nl
+                + "  split=<write output to individual files per sample> (default: " + DEF_SPLIT + ")";
     }
 
     // data input/output parameters
@@ -168,6 +166,14 @@ public final class HapIbdPar {
      */
     public String out() {
         return out;
+    }
+
+    /**
+     * Returns the splitFilename parameter.
+     * @return the splitFilename parameter
+     */
+    public String splitFilename() {
+        return splitFilename;
     }
 
     /**
@@ -257,5 +263,13 @@ public final class HapIbdPar {
      */
     public int min_new_proxykey() {
         return min_new_proxykey;
+    }
+
+    /**
+     * Returns the split parameter.
+     * @return the split parameter
+     */
+    public boolean split() {
+        return split;
     }
 }

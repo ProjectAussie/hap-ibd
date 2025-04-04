@@ -144,6 +144,14 @@ To produce output for all dogs x all dogs (eg for all new dogs vs all
 new dogs, if the input has been filtered to just new dogs), including
 homozygosity, don't provide this parameter (or set it to zero).
 
+* **split=[boolean]** specifies whether to write output to individual files per sample.
+If true, each sample's IBD and HBD segments will be written to separate files
+with names like `{out}/proxy_key/{split-filename}.ibd` and
+`{out}/proxy_key/{split-filename}.hbd`.
+`out` example: "/tmp/blah". `split-filename` example: "0000_chr1".
+If false (default), all segments will be written to single `{output_prefix}.ibd`
+and `{output_prefix}.hbd` files.
+
 ## Output files
 The **hap-ibd** program produces three output files: a **log** file, an
  **ibd** file, and an **hbd** file.
