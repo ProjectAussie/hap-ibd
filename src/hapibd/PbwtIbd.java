@@ -180,6 +180,12 @@ public final class PbwtIbd implements Runnable {
     @Override
     public void run() {
         try {
+            if (split) {
+                for (String proxyKeyStr : this.ids) {
+                    getWriterForProxyKey(Integer.parseInt(proxyKeyStr), "ibd");
+                    getWriterForProxyKey(Integer.parseInt(proxyKeyStr), "hbd");
+                }
+            }
             int maxIbsStart = windowStart;
             for (int m=advancePbwtToFirstIbsEnd(); m<windowEnd; ++m) {
                 if ((m & 0b11)==0b11 && useSeedQ==false && FINISHED_CNT.get()>0) {
