@@ -69,7 +69,8 @@ public final class PbwtIbdDriver {
         File ibdFile = new File(par.out() + ".ibd");
         try (SampleFileIt<RefGTRec> it = refIt(par);
                 SynchFileOutputStream hbdOS = new SynchFileOutputStream(hbdFile);
-                SynchFileOutputStream ibdOS = new SynchFileOutputStream(ibdFile)) {
+                SynchFileOutputStream ibdOS = new SynchFileOutputStream(ibdFile);
+                SplitFileWriterManager splitFileWriterManager = par.split() ? new SplitFileWriterManager(par) : null ){
             try {
                 nSamplesAndMarkers[0] = it.samples().nSamples();
                 List<RefGTRec> recList = new ArrayList<>(1<<14);
@@ -80,7 +81,7 @@ public final class PbwtIbdDriver {
                     if (recList.isEmpty()==false) {
                         RefGT gt = new RefGT(recList.toArray(new RefGTRec[0]));
                         MarkerMap map = MarkerMap.create(genMap, gt.markers());
-                        PbwtIbdDriver.detectIBD(par, gt, map, hbdOS, ibdOS);
+                        PbwtIbdDriver.detectIBD(par, gt, map, hbdOS, ibdOS, splitFileWriterManager);
                         nSamplesAndMarkers[1] += gt.nMarkers();
                     }
                 }
@@ -90,11 +91,13 @@ public final class PbwtIbdDriver {
         } catch (IOException ex) {
             Utilities.exit(ex);
         }
+
         return nSamplesAndMarkers;
     }
 
     private static void detectIBD(HapIbdPar par, RefGT gt, MarkerMap map,
-            SynchFileOutputStream hbdOS, SynchFileOutputStream ibdOS) {
+            SynchFileOutputStream hbdOS, SynchFileOutputStream ibdOS,
+            SplitFileWriterManager splitFileWriterManager) {
         float minSeed = par.min_seed();
         int minMarkers = par.min_markers();
         double[] genPos = map.genPos().toArray();
@@ -106,7 +109,7 @@ public final class PbwtIbdDriver {
         ExecutorService execService = Executors.newFixedThreadPool(starts.length);
         for (int j=0; j<starts.length; ++j) {
             PbwtIbd pbwtIbs = new PbwtIbd(par, gt, map, starts[j], ends[j],
-                    starts.length, seedQ, hbdOS, ibdOS);
+                    starts.length, seedQ, hbdOS, ibdOS, splitFileWriterManager);
             execService.submit(pbwtIbs);
         }
         MultiThreadUtils.shutdownExecService(execService);

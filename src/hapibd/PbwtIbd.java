@@ -94,6 +94,8 @@ public final class PbwtIbd implements Runnable {
     private final String outputPrefix;
     private final String splitFilename;
     private final boolean split;
+    private SplitFileWriterManager splitFileWriterManager;
+
     private boolean useSeedQ = false;
     private final int nWindows;
     private final IntList seedList;
@@ -125,7 +127,8 @@ public final class PbwtIbd implements Runnable {
     public PbwtIbd(HapIbdPar par, RefGT gt, MarkerMap map,
             int windowStart, int windowEnd, int nWindows,
             BlockingQueue<int[]> seedQ,
-            SynchFileOutputStream hbdOS, SynchFileOutputStream ibdOS) {
+            SynchFileOutputStream hbdOS, SynchFileOutputStream ibdOS,
+            SplitFileWriterManager splitFileWriterManager) {
         if (gt.isPhased()==false) {
             throw new IllegalArgumentException("unphased data");
         }
@@ -162,6 +165,7 @@ public final class PbwtIbd implements Runnable {
         this.ibdOS = ibdOS;
         this.split = par.split();
 
+        this.splitFileWriterManager = splitFileWriterManager;
         this.outputPrefix = par.out();
         this.splitFilename = par.splitFilename();
         this.ibdWriters = new ConcurrentHashMap<>();
@@ -204,14 +208,6 @@ public final class PbwtIbd implements Runnable {
         }
         catch (Throwable t) {
             Utilities.exit(t);
-        }
-        finally {
-            for (PrintWriter writer : ibdWriters.values()) {
-                writer.close();
-            }
-            for (PrintWriter writer : hbdWriters.values()) {
-                writer.close();
-            }
         }
     }
 
@@ -513,7 +509,7 @@ public final class PbwtIbd implements Runnable {
         }
 
         if (split) {
-            PrintWriter splitWriter = getWriterForProxyKey(hap1ProxyKey, type);
+            PrintWriter splitWriter = splitFileWriterManager.getWriterForProxyKey(hap1ProxyKey, type);
             synchronized (splitWriter) {
                 printSegment(splitWriter, hap1ProxyKey, hap2ProxyKey, hap1, hap2, start, inclEnd);
                 splitWriter.println(); // flushes line to file
