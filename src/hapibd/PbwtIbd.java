@@ -89,8 +89,6 @@ public final class PbwtIbd implements Runnable {
 
     private PrintWriter hbdOut = printWriter(hbdBaos);
     private PrintWriter ibdOut = printWriter(ibdBaos);
-    private final Map<Integer, PrintWriter> ibdWriters;
-    private final Map<Integer, PrintWriter> hbdWriters;
     private final String outputPrefix;
     private final String splitFilename;
     private final boolean split;
@@ -168,8 +166,6 @@ public final class PbwtIbd implements Runnable {
         this.splitFileWriterManager = splitFileWriterManager;
         this.outputPrefix = par.out();
         this.splitFilename = par.splitFilename();
-        this.ibdWriters = new ConcurrentHashMap<>();
-        this.hbdWriters = new ConcurrentHashMap<>();
 
         this.pbwt = new PbwtUpdater(nHaps);
         this.a = IntStream.range(0, nHaps).toArray();
@@ -472,25 +468,6 @@ public final class PbwtIbd implements Runnable {
                 Utilities.exit("ERROR: ", ex);
             }
         }
-    }
-
-    private PrintWriter getWriterForProxyKey(int proxyKey, String type) {
-        Map<Integer, PrintWriter> writers = type.equals("ibd") ? ibdWriters : hbdWriters;
-        return writers.computeIfAbsent(proxyKey, key -> {
-            try {
-                String dirPath = outputPrefix + "/" + key;
-                File dir = new File(dirPath);
-                if (!dir.mkdirs() && !dir.isDirectory()) {
-                    Utilities.exit("ERROR: Failed to create directory " + dirPath);
-                }
-                String filename = dirPath + "/" + splitFilename + "." + type;
-                return new PrintWriter(new File(filename));
-            }
-            catch (IOException e) {
-                Utilities.exit("ERROR creating " + type + " file for proxy key " + key + ": ", e);
-                return null; // This will never be reached due to Utilities.exit
-            }
-        });
     }
 
     private void writeSegment(int hap1, int hap2, int start, int inclEnd,
