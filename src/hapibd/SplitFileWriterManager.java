@@ -8,7 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import blbutil.Utilities;
 
+
 public class SplitFileWriterManager implements AutoCloseable {
+
+    public static enum MatchType {HBD, IBD};
+
     private final String outputPrefix;
     private final String splitFilename;
 
@@ -22,8 +26,8 @@ public class SplitFileWriterManager implements AutoCloseable {
         this.hbdWriters = new ConcurrentHashMap<>();
     }
 
-    public PrintWriter getWriterForProxyKey(int proxyKey, String type) {
-        Map<Integer, PrintWriter> writers = type.equals("ibd") ? ibdWriters : hbdWriters;
+    public PrintWriter getWriterForProxyKey(int proxyKey, MatchType type) {
+        Map<Integer, PrintWriter> writers = type.equals(MatchType.IBD) ? ibdWriters : hbdWriters;
         return writers.computeIfAbsent(proxyKey, key -> {
             try {
                 String dirPath = outputPrefix + "/" + key;
@@ -31,7 +35,7 @@ public class SplitFileWriterManager implements AutoCloseable {
                 if (!dir.mkdirs() && !dir.isDirectory()) {
                     Utilities.exit("ERROR: Failed to create directory " + dirPath);
                 }
-                String filename = dirPath + "/" + splitFilename + "." + type;
+                String filename = dirPath + "/" + splitFilename + "." + type.toString().toLowerCase();
                 return new PrintWriter(new File(filename));
             }
             catch (IOException e) {

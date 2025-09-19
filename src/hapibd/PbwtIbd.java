@@ -40,6 +40,7 @@ import vcf.MarkerMap;
 import vcf.RefGT;
 import vcf.Samples;
 
+
 /**
  * <p>Instances of class {@code PbwtIbd} detect IBS segments in phased
  * genotype data.</p>
@@ -329,11 +330,11 @@ public final class PbwtIbd implements Runnable {
             inclEnd = extendInclEnd(hap1, hap2, inclEnd);
             if ((genPos[inclEnd] - genPos[start])>=minOutput) {
                 if ((hap1>>1)==(hap2>>1)) {
-                    writeSegment(hap1, hap2, start, inclEnd, hbdOut, "hbd");
+                    writeSegment(hap1, hap2, start, inclEnd, hbdOut, SplitFileWriterManager.MatchType.HBD);
                     N_HBD_SEGS.incrementAndGet();
                 }
                 else {
-                    writeSegment(hap1, hap2, start, inclEnd, ibdOut, "ibd");
+                    writeSegment(hap1, hap2, start, inclEnd, ibdOut, SplitFileWriterManager.MatchType.IBD);
                     N_IBD_SEGS.incrementAndGet();
                 }
             }
@@ -471,7 +472,7 @@ public final class PbwtIbd implements Runnable {
     }
 
     private void writeSegment(int hap1, int hap2, int start, int inclEnd,
-            PrintWriter out, String type) {
+            PrintWriter out, SplitFileWriterManager.MatchType type) {
         // At Embark, the new dog, ie the higher proxy key, comes first
         if (Integer.parseInt(ids[hap1>>1]) < Integer.parseInt(ids[hap2>>1])) {
             int tmp = hap1;
