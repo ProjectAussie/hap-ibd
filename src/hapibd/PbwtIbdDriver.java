@@ -91,7 +91,6 @@ public final class PbwtIbdDriver {
         } catch (IOException ex) {
             Utilities.exit(ex);
         }
-
         return nSamplesAndMarkers;
     }
 

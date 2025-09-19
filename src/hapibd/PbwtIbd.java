@@ -40,7 +40,6 @@ import vcf.MarkerMap;
 import vcf.RefGT;
 import vcf.Samples;
 
-
 /**
  * <p>Instances of class {@code PbwtIbd} detect IBS segments in phased
  * genotype data.</p>
